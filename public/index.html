@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>P.S Movizx – Tamil Movies Hub</title>
+<meta name="description" content="P.S Movizx – Watch & download all Tamil movies in HD. No ads, direct download, custom player.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>�</text></svg>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+/* ══════════════════════════════════════════════════════════
+   BASE
+══════════════════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#090910;--bg2:#0f0f1a;--bg3:#161625;--card:#1a1a2e;--card2:#1f1f35;
+  --accent:#e50914;--accent2:#ff6b35;--purple:#7c3aed;--blue:#2563eb;
+  --gold:#ffd700;--green:#22c55e;
+  --text:#f1f1f1;--muted:#6b7280;--border:#252540;
+  --grad:linear-gradient(135deg,#e50914 0%,#ff6b35 100%);
+  --grad2:linear-gradient(135deg,#7c3aed 0%,#e50914 100%);
+  --grad3:linear-gradient(135deg,#0ea5e9 0%,#7c3aed 100%);
+  --shadow:0 4px 24px rgba(0,0,0,.6);
+  --shadow2:0 20px 60px rgba(0,0,0,.8);
+  --radius:12px;
+  --radius2:20px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:inherit;outline:none}
+input{outline:none}
+img{display:block;max-width:100%}
+::selection{background:rgba(229,9,20,.35)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+
+/* ══════════════════════════════════════════════════════════
+   LOADER
+══════════════════════════════════════════════════════════ */
+#loader{position:fixed;inset:0;z-index:9999;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  transition:opacity .5s,visibility .5s}
+#loader.gone{opacity:0;visibility:hidden;pointer-events:none}
+.ld-logo{font-size:3.2rem;font-weight:900;background:var(--grad);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;
+  animation:pulse 2s ease-in-out infinite;display:flex;align-items:center;gap:0.5rem}
+.ld-logo i{font-size:2.5rem;-webkit-text-fill-color:var(--accent)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.ld-bar{width:200px;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.ld-bar-inner{height:100%;background:var(--grad);border-radius:2px;
+  animation:ldbar 1.8s ease-in-out infinite}
+@keyframes ldbar{0%{width:0%;margin-left:0}50%{width:70%;margin-left:0}100%{width:0%;margin-left:100%}}
+.ld-text{font-size:.85rem;color:var(--muted)}
+
+/* ══════════════════════════════════════════════════════════
+   NAVBAR
+══════════════════════════════════════════════════════════ */
+#navbar{
+  position:sticky;top:0;z-index:300;
+  background:rgba(9,9,16,.92);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:14px;
+  padding:0 18px;height:62px;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;flex-shrink:0;
+  font-size:1.3rem;font-weight:900;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent
+}
+.nav-logo-sub{
+  font-size:.65rem;font-weight:500;-webkit-text-fill-color:var(--muted);
+  background:none;display:block;line-height:1
+}
+.nav-logo-icon{font-size:1.5rem;-webkit-text-fill-color:initial;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.nav-logo-icon i{color:var(--accent);font-size:1.3rem}
+
+/* Global search */
+#gsearch-wrap{flex:1;position:relative;max-width:580px}
+#gsearch{
+  width:100%;padding:9px 42px 9px 42px;
+  background:var(--bg3);border:1.5px solid var(--border);
+  border-radius:30px;color:var(--text);font-size:.88rem;
+  transition:border-color .2s,box-shadow .2s
+}
+#gsearch:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(229,9,20,.15)}
+.gs-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:.95rem;pointer-events:none;opacity:.5}
+.gs-clear{position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:var(--muted);font-size:1rem;cursor:pointer;display:none}
+.gs-clear.show{display:block}
+
+#gdrop{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;
+  background:var(--card2);border:1px solid var(--border);border-radius:var(--radius);
+  max-height:440px;overflow-y:auto;z-index:400;display:none;
+  box-shadow:var(--shadow2)
+}
+#gdrop.show{display:block}
+.gd-item{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border)}
+.gd-item:last-child{border-bottom:none}
+.gd-item:hover{background:var(--bg3)}
+.gd-thumb{width:44px;height:28px;object-fit:cover;border-radius:5px;background:var(--bg3);flex-shrink:0}
+.gd-name{font-size:.83rem;font-weight:600;line-height:1.3}
+.gd-cat{font-size:.72rem;color:var(--muted);margin-top:2px}
+.gd-empty{padding:20px;text-align:center;color:var(--muted);font-size:.85rem}
+
+/* Nav buttons */
+.nav-right{display:flex;gap:8px;align-items:center;margin-left:auto;flex-shrink:0}
+.nbtn{
+  display:flex;align-items:center;gap:6px;padding:7px 14px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:30px;
+  color:var(--text);font-size:.8rem;font-weight:600;
+  transition:all .2s;white-space:nowrap
+}
+.nbtn:hover,.nbtn.active{background:var(--grad);border-color:transparent;color:#fff}
+#nbtn-notif{position:relative}
+.notif-dot{
+  position:absolute;top:-3px;right:-3px;width:18px;height:18px;
+  background:var(--accent);border-radius:50%;border:2px solid var(--bg);
+  font-size:.62rem;font-weight:800;color:#fff;
+  display:flex;align-items:center;justify-content:center
+}
+.menu-toggle{display:none}
+@media(max-width:768px){
+  .menu-toggle{display:flex}
+  #gsearch-wrap{max-width:none}
+  .nbtn:not(.menu-toggle):not(#nbtn-notif){display:none}
+}
+
+/* ══════════════════════════════════════════════════════════
+   NOTIFICATION PANEL
+══════════════════════════════════════════════════════════ */
+#notif-panel{
+  position:fixed;top:70px;right:18px;width:340px;
+  background:var(--card2);border:1px solid var(--border);border-radius:var(--radius2);
+  z-index:290;max-height:500px;display:none;flex-direction:column;
+  box-shadow:var(--shadow2);overflow:hidden
+}
+#notif-panel.show{display:flex}
+.np-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  font-size:.9rem;font-weight:700
+}
+.np-close{background:none;border:none;color:var(--muted);font-size:1.1rem;transition:color .2s}
+.np-close:hover{color:var(--accent)}
+.np-list{overflow-y:auto;flex:1}
+.np-item{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .15s;font-size:.8rem;line-height:1.5
+}
+.np-item:hover{background:var(--bg3)}
+.np-item.unread{border-left:3px solid var(--accent);padding-left:13px}
+.np-time{font-size:.7rem;color:var(--muted);margin-top:4px}
+.np-empty{padding:30px;text-align:center;color:var(--muted);font-size:.85rem}
+
+/* ══════════════════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════════════════ */
+#layout{display:flex;min-height:calc(100vh - 62px)}
+
+/* ── Sidebar ── */
+#sidebar{
+  width:250px;flex-shrink:0;
+  background:var(--bg2);border-right:1px solid var(--border);
+  overflow-y:auto;position:sticky;top:62px;height:calc(100vh - 62px)
+}
+#sb-overlay{display:none;position:fixed;inset:0;top:62px;background:rgba(0,0,0,.6);z-index:149}
+@media(max-width:768px){
+  #sidebar{
+    position:fixed;left:-260px;top:62px;height:calc(100vh - 62px);
+    z-index:150;transition:left .28s;box-shadow:6px 0 24px rgba(0,0,0,.5)
+  }
+  #sidebar.open{left:0}
+  #sb-overlay.show{display:block}
+}
+.sb-section{padding:10px 0}
+.sb-label{
+  padding:7px 16px;font-size:.68rem;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--muted)
+}
+.sb-divider{height:1px;background:var(--border);margin:6px 12px}
+.sbbtn{
+  width:100%;text-align:left;padding:8px 16px;
+  background:none;border:none;border-left:3px solid transparent;
+  color:var(--text);font-size:.85rem;
+  display:flex;align-items:center;gap:9px;
+  transition:background .15s,border-color .15s,color .15s
+}
+.sbbtn:hover{background:var(--bg3);color:var(--accent2);border-left-color:var(--accent2)}
+.sbbtn.active{background:rgba(229,9,20,.12);color:var(--accent);border-left-color:var(--accent);font-weight:700}
+.sbbtn .ic{font-size:.9rem;flex-shrink:0;width:20px;text-align:center}
+
+/* ── Main ── */
+#main{flex:1;overflow-x:hidden;min-width:0}
+
+/* ══════════════════════════════════════════════════════════
+   TICKER
+══════════════════════════════════════════════════════════ */
+#ticker{
+  background:linear-gradient(90deg,var(--bg3),var(--bg2));
+  border-bottom:1px solid var(--border);
+  padding:7px 18px;display:flex;align-items:center;gap:12px;overflow:hidden
+}
+.tk-badge{
+  background:var(--accent);color:#fff;font-size:.68rem;font-weight:800;
+  padding:2px 9px;border-radius:4px;white-space:nowrap;flex-shrink:0;letter-spacing:.05em
+}
+.tk-scroll{overflow:hidden;flex:1;position:relative}
+.tk-inner{
+  display:inline-block;white-space:nowrap;font-size:.78rem;color:var(--muted);
+  animation:tickscroll 60s linear infinite
+}
+@keyframes tickscroll{0%{transform:translateX(100vw)}100%{transform:translateX(-100%)}}
+
+/* ══════════════════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════════════════ */
+#hero{
+  background:linear-gradient(160deg,#0d0d1f 0%,#1a0022 50%,#0a0a18 100%);
+  padding:44px 28px 36px;text-align:center;position:relative;overflow:hidden
+}
+#hero::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(229,9,20,.18),transparent);
+  pointer-events:none
+}
+#hero::after{
+  content:'';position:absolute;inset:0;
+  background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23fff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events:none
+}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 14px;background:rgba(229,9,20,.2);border:1px solid rgba(229,9,20,.4);
+  border-radius:30px;font-size:.72rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;margin-bottom:16px;position:relative
+}
+.hero-title{
+  font-size:clamp(2.2rem,6vw,4rem);font-weight:900;line-height:1.05;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:10px;position:relative
+}
+.hero-sub{font-size:.95rem;color:var(--muted);margin-bottom:26px;position:relative}
+.hero-stats{
+  display:flex;gap:20px;justify-content:center;flex-wrap:wrap;position:relative
+}
+.hstat{text-align:center}
+.hstat-n{
+  font-size:1.7rem;font-weight:900;
+  background:var(--grad2);-webkit-background-clip:text;-webkit-text-fill-color:transparent
+}
+.hstat-l{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+
+/* ══════════════════════════════════════════════════════════
+   YEAR QUICK TABS
+══════════════════════════════════════════════════════════ */
+#year-tabs-wrap{
+  display:flex;gap:8px;overflow-x:auto;padding:14px 20px 10px;
+  scrollbar-width:none;-ms-overflow-style:none
+}
+#year-tabs-wrap::-webkit-scrollbar{display:none}
+.ytab{
+  flex-shrink:0;padding:6px 18px;
+  background:var(--bg3);border:1px solid var(--border);border-radius:30px;
+  color:var(--text);font-size:.82rem;font-weight:600;
+  transition:all .2s
+}
+.ytab:hover,.ytab.active{background:var(--grad);border-color:transparent;color:#fff;box-shadow:0 4px 16px rgba(229,9,20,.35)}
+
+/* ══════════════════════════════════════════════════════════
+   SECTION
+══════════════════════════════════════════════════════════ */
+.section{padding:20px 20px}
+.sec-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;gap:10px;flex-wrap:wrap
+}
+.sec-title{
+  font-size:1.15rem;font-weight:800;
+  display:flex;align-items:center;gap:10px
+}
+.sec-title::before{
+  content:'';display:block;width:4px;height:22px;
+  background:var(--grad);border-radius:2px;flex-shrink:0
+}
+.sec-count{font-size:.78rem;color:var(--muted);font-weight:400}
+.sec-search{
+  padding:8px 16px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;color:var(--text);font-size:.83rem;width:210px;
+  transition:border-color .2s
+}
+.sec-search:focus{border-color:var(--accent)}
+
+/* ══════════════════════════════════════════════════════════
+   MOVIE GRID
+══════════════════════════════════════════════════════════ */
+.mgrid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(155px,1fr));
+  gap:14px
+}
+@media(max-width:480px){.mgrid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}}
+
+/* ── Movie Card ── */
+.mcard{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;
+  transition:transform .22s,box-shadow .22s,border-color .22s;
+  position:relative
+}
+.mcard:hover{
+  transform:translateY(-5px);
+  box-shadow:0 20px 48px rgba(229,9,20,.3);
+  border-color:rgba(229,9,20,.6)
+}
+.mcard-poster{position:relative;aspect-ratio:2/3;background:var(--bg3);overflow:hidden}
+.mcard-poster img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;transition:transform .3s
+}
+.mcard:hover .mcard-poster img{transform:scale(1.06)}
+.mcard-ph{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:6px;color:var(--border)
+}
+.mcard-ph span{font-size:2.8rem}
+.mcard-ph small{font-size:.65rem;text-align:center;padding:0 6px;color:var(--muted)}
+.mcard-rating{
+  position:absolute;top:7px;left:7px;
+  background:rgba(0,0,0,.75);color:var(--gold);
+  font-size:.68rem;font-weight:700;padding:3px 8px;border-radius:10px;
+  display:flex;align-items:center;gap:2px;backdrop-filter:blur(4px)
+}
+.mcard-badge{
+  position:absolute;top:7px;right:7px;
+  background:var(--accent);color:#fff;
+  font-size:.62rem;font-weight:800;padding:2px 7px;border-radius:5px;letter-spacing:.04em
+}
+.mcard-overlay{
+  position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,transparent 50%);
+  opacity:0;transition:opacity .22s;display:flex;align-items:center;justify-content:center
+}
+.mcard:hover .mcard-overlay{opacity:1}
+.mcard-play{
+  width:50px;height:50px;border-radius:50%;
+  background:rgba(229,9,20,.9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;color:#fff;
+  box-shadow:0 4px 20px rgba(229,9,20,.5);
+  transform:scale(0.85);transition:transform .22s
+}
+.mcard:hover .mcard-play{transform:scale(1)}
+.mcard-info{padding:9px 10px 11px}
+.mcard-title{
+  font-size:.8rem;font-weight:600;line-height:1.35;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden
+}
+.mcard-year{font-size:.7rem;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:4px}
+.mcard-new{
+  position:absolute;top:7px;left:7px;
+  background:var(--green);color:#fff;font-size:.6rem;font-weight:800;
+  padding:2px 7px;border-radius:5px;letter-spacing:.04em
+}
+
+/* ══════════════════════════════════════════════════════════
+   SKELETON
+══════════════════════════════════════════════════════════ */
+@keyframes shimmer{0%{background-position:-500px 0}100%{background-position:500px 0}}
+.sk{background:linear-gradient(90deg,var(--bg3) 25%,var(--bg2) 50%,var(--bg3) 75%);
+  background-size:1000px 100%;animation:shimmer 1.6s infinite}
+.sk-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.sk-poster{aspect-ratio:2/3}
+.sk-line{height:11px;border-radius:5px;margin:10px 10px 6px}
+.sk-line.s{width:55%;margin:5px 10px 11px}
+
+/* ══════════════════════════════════════════════════════════
+   LOAD MORE
+══════════════════════════════════════════════════════════ */
+.lm-wrap{text-align:center;padding:20px}
+.lm-btn{
+  padding:11px 30px;background:var(--grad);border:none;border-radius:30px;
+  color:#fff;font-weight:700;font-size:.88rem;
+  transition:opacity .2s,transform .2s;box-shadow:0 4px 16px rgba(229,9,20,.35)
+}
+.lm-btn:hover{opacity:.85;transform:scale(1.03)}
+.lm-btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+/* ══════════════════════════════════════════════════════════
+   BREADCRUMB
+══════════════════════════════════════════════════════════ */
+.bc{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:14px 20px 0;font-size:.79rem;color:var(--muted)
+}
+.bc-item{cursor:pointer;transition:color .15s}
+.bc-item:hover{color:var(--accent)}
+.bc-item.last{color:var(--text);cursor:default}
+.bc-sep{opacity:.35}
+
+/* ══════════════════════════════════════════════════════════
+   MOVIE DETAIL MODAL
+══════════════════════════════════════════════════════════ */
+#modal-bg{
+  position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;
+  display:none;align-items:center;justify-content:center;
+  padding:14px;backdrop-filter:blur(8px)
+}
+#modal-bg.show{display:flex}
+#modal{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius2);
+  width:100%;max-width:920px;max-height:92vh;overflow:hidden;
+  display:flex;flex-direction:column;box-shadow:var(--shadow2)
+}
+.modal-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 20px;border-bottom:1px solid var(--border);flex-shrink:0
+}
+.modal-bar-title{font-size:.95rem;font-weight:700;max-width:calc(100% - 48px);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modal-bar-close{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--bg3);border:1px solid var(--border);
+  color:var(--text);font-size:1rem;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:all .2s
+}
+.modal-bar-close:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.modal-body{overflow-y:auto;flex:1;padding:20px}
+.modal-spin{
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;padding:48px;color:var(--muted)
+}
+
+/* ── Movie Detail Layout ── */
+.dl{display:grid;grid-template-columns:190px 1fr;gap:22px}
+@media(max-width:560px){.dl{grid-template-columns:1fr}}
+.dl-poster{border-radius:var(--radius);overflow:hidden;aspect-ratio:2/3;background:var(--bg3);flex-shrink:0}
+.dl-poster img{width:100%;height:100%;object-fit:cover}
+.dl-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted)}
+.dl-ph span{font-size:2.5rem}
+
+.dl-title{font-size:1.25rem;font-weight:800;line-height:1.3;margin-bottom:10px}
+.dl-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.dl-tag{
+  padding:4px 12px;border-radius:20px;font-size:.73rem;font-weight:600;
+  background:var(--bg3);border:1px solid var(--border)
+}
+.dl-tag.gold{background:rgba(255,215,0,.1);border-color:rgba(255,215,0,.4);color:var(--gold)}
+.dl-tag.green{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--green)}
+.dl-plot{font-size:.83rem;color:var(--muted);line-height:1.65;margin-bottom:14px}
+.dl-row{font-size:.8rem;color:var(--muted);margin-bottom:5px}
+.dl-row b{color:var(--text)}
+
+/* Quality tabs */
+.qtabs{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 10px}
+.qtab{
+  padding:6px 16px;background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;color:var(--text);font-size:.8rem;font-weight:600;
+  transition:all .2s
+}
+.qtab:hover,.qtab.on{background:var(--grad);border-color:transparent;color:#fff}
+
+/* File card */
+.fcard{
+  background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:13px;margin-bottom:10px;display:flex;align-items:center;gap:12px
+}
+.fcard-thumb{width:68px;height:44px;object-fit:cover;border-radius:6px;background:var(--bg2);flex-shrink:0}
+.fcard-info{flex:1;min-width:0}
+.fcard-name{font-size:.8rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fcard-meta{font-size:.71rem;color:var(--muted);margin-top:3px}
+.fcard-btns{display:flex;gap:7px;flex-shrink:0;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:7px 13px;border:none;border-radius:20px;
+  font-size:.78rem;font-weight:700;transition:all .2s;white-space:nowrap
+}
+.btn-watch{background:var(--grad2);color:#fff}
+.btn-watch:hover{opacity:.85;transform:scale(1.03)}
+.btn-dl{background:var(--grad);color:#fff}
+.btn-dl:hover{opacity:.85;transform:scale(1.03)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ══════════════════════════════════════════════════════════
+   CUSTOM VIDEO PLAYER
+══════════════════════════════════════════════════════════ */
+#player-wrap{
+  background:#000;border-radius:var(--radius);overflow:hidden;
+  margin-bottom:18px;position:relative;display:none
+}
+#player-wrap.show{display:block}
+#vid{width:100%;max-height:460px;background:#000;display:block;cursor:pointer}
+.player-gradient{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,.95) 0%,transparent 100%);
+  padding:60px 14px 12px
+}
+.player-title-bar{
+  font-size:.78rem;color:#bbb;margin-bottom:8px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+#player-progress{
+  width:100%;height:4px;background:rgba(255,255,255,.2);
+  border-radius:2px;-webkit-appearance:none;appearance:none;cursor:pointer;
+  margin-bottom:10px;accent-color:var(--accent)
+}
+#player-progress::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 6px rgba(229,9,20,.6)}
+.player-ctrls{display:flex;align-items:center;gap:8px}
+.pc{background:none;border:none;color:#fff;font-size:1.05rem;padding:4px 6px;border-radius:6px;transition:background .15s;display:flex;align-items:center;justify-content:center}
+.pc i{font-size:0.95rem;color:#fff}
+.pc:hover{background:rgba(255,255,255,.15)}
+#player-vol{width:75px;accent-color:var(--accent);cursor:pointer}
+.p-time{font-size:.76rem;color:#ccc;font-variant-numeric:tabular-nums;white-space:nowrap}
+.p-right{margin-left:auto;display:flex;gap:6px}
+.player-loading-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.7);
+  display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px
+}
+.player-loading-overlay.show{display:flex}
+.spin{
+  width:40px;height:40px;border:3px solid rgba(255,255,255,.2);
+  border-top-color:var(--accent);border-radius:50%;animation:spin .75s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin-sm{width:28px;height:28px;border-width:2px}
+.player-error{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;background:rgba(0,0,0,.8);color:var(--accent);font-size:.9rem}
+.player-error.show{display:flex}
+
+/* ══════════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════════ */
+#toasts{position:fixed;bottom:22px;right:22px;z-index:9999;display:flex;flex-direction:column-reverse;gap:8px;max-width:320px}
+.toast{
+  background:var(--card2);border:1px solid var(--border);border-radius:12px;
+  padding:11px 16px;font-size:.82rem;box-shadow:var(--shadow2);
+  display:flex;align-items:center;gap:9px;
+  animation:toastIn .3s ease
+}
+@keyframes toastIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.success{border-left:4px solid var(--green)}
+.toast.error{border-left:4px solid var(--accent)}
+.toast.info{border-left:4px solid var(--blue)}
+.toast.warn{border-left:4px solid var(--gold)}
+
+/* ──────────────────────────────────────────────────────────
+   LETTER SELECTOR (A-Z MOVIES)
+──────────────────────────────────────────────────────────── */
+#letter-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(45px,1fr));
+  gap:8px;padding:20px;max-width:600px;
+  margin:0 auto;
+}
+.letter-btn{
+  padding:12px 8px;background:var(--bg3);border:2px solid var(--border);
+  border-radius:8px;color:var(--text);font-weight:700;font-size:.9rem;
+  cursor:pointer;transition:all .2s;text-align:center;
+}
+.letter-btn:hover{
+  background:var(--grad);border-color:var(--accent);color:#fff;transform:scale(1.05);
+}
+.letter-btn.active{
+  background:var(--grad);border-color:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(229,9,20,.4);
+}
+.letter-btn:disabled{
+  opacity:.4;cursor:not-allowed;
+}
+#letter-section{
+  padding:20px;text-align:center;
+}
+#letter-section .sec-title{
+  margin-bottom:20px;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MISC
+══════════════════════════════════════════════════════════ */
+.divider{height:1px;background:var(--border);margin:6px 0}
+.center{text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ══ LOADER ══════════════════════════════════════════════ -->
+<div id="loader">
+  <div class="ld-logo"><i class="fas fa-film"></i> P.S Movizx</div>
+  <div class="ld-bar"><div class="ld-bar-inner"></div></div>
+  <div class="ld-text">Initialising your Tamil movie hub…</div>
+</div>
+
+<!-- ══ SIDEBAR OVERLAY (mobile) ════════════════════════════ -->
+<div id="sb-overlay" onclick="closeSidebar()"></div>
+
+<!-- ══ NOTIFICATION PANEL ══════════════════════════════════ -->
+<div id="notif-panel">
+  <div class="np-head">
+    <span><i class="fas fa-bell"></i> Latest Updates</span>
+    <button class="np-close" onclick="toggleNotif(false)"><i class="fas fa-xmark"></i></button>
+  </div>
+  <div class="np-list" id="np-list">
+    <div class="np-empty">Loading updates…</div>
+  </div>
+</div>
+
+<!-- ══ NAVBAR ═══════════════════════════════════════════════ -->
+<nav id="navbar">
+  <button class="nbtn menu-toggle" onclick="toggleSidebar()" aria-label="Menu"><i class="fas fa-bars"></i></button>
+
+  <div class="nav-logo">
+    <span class="nav-logo-icon"><i class="fas fa-film"></i></span>
+    <span>P.S Movizx<span class="nav-logo-sub">Tamil Movies Hub</span></span>
+  </div>
+
+  <div id="gsearch-wrap">
+    <span class="gs-icon"><i class="fas fa-search"></i></span>
+    <input id="gsearch" type="text" autocomplete="off" spellcheck="false"
+           placeholder="Search any movie across all categories…"
+           oninput="onGSearch(this.value)"
+           onfocus="onGSearch(this.value)">
+    <button class="gs-clear" id="gs-clear" onclick="clearGSearch()"><i class="fas fa-xmark"></i></button>
+    <div id="gdrop"></div>
+  </div>
+
+  <div class="nav-right">
+    <button class="nbtn" id="nbtn-notif" onclick="toggleNotif()">
+      <i class="fas fa-bell"></i>
+      <span class="notif-dot" id="notif-dot">0</span>
+    </button>
+    <button class="nbtn" onclick="scrollTo(0,0)"><i class="fas fa-arrow-up"></i> Top</button>
+  </div>
+</nav>
+
+<!-- ══ LAYOUT ═══════════════════════════════════════════════ -->
+<div id="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside id="sidebar">
+    <div class="sb-section">
+      <div class="sb-label"><i class="fas fa-calendar"></i> By Year</div>
+      <div id="sb-years"></div>
+    </div>
+    <div class="sb-divider"></div>
+    <div class="sb-section">
+      <div class="sb-label"><i class="fas fa-folder"></i> Categories</div>
+      <div id="sb-more"></div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main id="main">
+
+    <!-- TICKER -->
+    <div id="ticker">
+      <span class="tk-badge"><i class="fas fa-star"></i> NEW</span>
+      <div class="tk-scroll"><div class="tk-inner" id="tk-inner">Loading latest updates…</div></div>
+    </div>
+
+    <!-- HOME VIEW -->
+    <div id="view-home">
+      <div id="hero">
+        <div class="hero-pill"><i class="fas fa-sparkles"></i> Premium • No Ads • Free</div>
+        <h1 class="hero-title">P.S Movizx</h1>
+        <p class="hero-sub">All Tamil Movies · Direct Download · Watch Online · No Redirects</p>
+        <div class="hero-stats">
+          <div class="hstat"><div class="hstat-n" id="stat-movies">—</div><div class="hstat-l">Movies</div></div>
+          <div class="hstat"><div class="hstat-n" id="stat-cats">—</div><div class="hstat-l">Categories</div></div>
+          <div class="hstat"><div class="hstat-n">HD</div><div class="hstat-l">Quality</div></div>
+          <div class="hstat"><div class="hstat-n">Free</div><div class="hstat-l">No Ads</div></div>
+        </div>
+      </div>
+
+      <!-- Year quick-jump tabs -->
+      <div id="year-tabs-wrap"></div>
+
+      <!-- Latest 2025 section -->
+      <div class="section">
+        <div class="sec-head">
+          <div class="sec-title"><i class="fas fa-fire"></i> Tamil 2025 Movies <span class="sec-count" id="cnt-latest"></span></div>
+          <input class="sec-search" type="text" placeholder="Search here…"
+                 oninput="filterGrid(this,'grid-latest')">
+        </div>
+        <div class="mgrid" id="grid-latest"></div>
+        <div class="lm-wrap" id="lm-latest" style="display:none">
+          <button class="lm-btn" onclick="loadMoreHome()">Load More Movies</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORY VIEW -->
+    <div id="view-cat" style="display:none">
+      <div class="bc" id="bc"></div>
+      
+      <!-- LETTER SELECTOR (for A-Z categories) -->
+      <div id="letter-section" style="display:none">
+        <div class="sec-title" style="margin: 20px 0;"><i class="fas fa-filter"></i> Select a Letter</div>
+        <div id="letter-grid"></div>
+      </div>
+      
+      <div class="section" style="padding-top:12px">
+        <div class="sec-head">
+          <div class="sec-title" id="cat-title">Movies <span class="sec-count" id="cnt-cat"></span></div>
+          <input class="sec-search" type="text" placeholder="Search in this category…"
+                 oninput="filterGrid(this,'grid-cat')">
+        </div>
+        <div class="mgrid" id="grid-cat"></div>
+        <div class="lm-wrap" id="lm-cat" style="display:none">
+          <button class="lm-btn" onclick="loadMoreCat()">Load More</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ MOVIE DETAIL MODAL ═══════════════════════════════════ -->
+<div id="modal-bg" onclick="onModalBgClick(event)">
+  <div id="modal">
+    <div class="modal-bar">
+      <div class="modal-bar-title" id="modal-title">Movie Details</div>
+      <button class="modal-bar-close" onclick="closeModal()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ══ TOASTS ════════════════════════════════════════════════ -->
+<div id="toasts"></div>
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   P.S MOVIZX — Frontend Application
+   ════════════════════════════════════════════════════════════ */
+
+/* ── State ─────────────────────────────────────────────── */
+const S = {
+  cats         : [],
+  homeMovies   : [],
+  homePage     : 0,
+  catMovies    : [],
+  catPage      : 0,
+  catInfo      : null,
+  selectedLetter: null,
+  globalIdx    : [],   // { name, path, category }
+  notifCount   : 0,
+};
+const PAGE = 40;
+
+/* ── Helpers ─────────────────────────────────────────────── */
+const $ = id => document.getElementById(id);
+const qs = sel => document.querySelector(sel);
+const qsa = sel => document.querySelectorAll(sel);
+
+function toast(msg, type = 'info', dur = 3500) {
+  const icons = { success:'<i class="fas fa-check"></i>', error:'<i class="fas fa-xmark"></i>', info:'<i class="fas fa-info"></i>', warn:'<i class="fas fa-exclamation"></i>' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]||'<i class="fas fa-info"></i>'}</span><span>${msg}</span>`;
+  $('toasts').appendChild(el);
+  setTimeout(() => el.remove(), dur);
+}
+
+function sec2hms(s) {
+  s = Math.floor(+s || 0);
+  const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), ss = s%60;
+  return h
+    ? `${h}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`
+    : `${m}:${String(ss).padStart(2,'0')}`;
+}
+
+function extractYear(name) {
+  const m = name.match(/\((\d{4})\)/); return m ? m[1] : '';
+}
+function cleanTitle(name) {
+  return name.replace(/\(?\d{4}\)?/g,'').replace(/\(.*?\)/g,'')
+             .replace(/\b(HD|720p|1080p|360p|480p|Original|DVDRip|BluRay|WEB-DL|WEBRip)\b/gi,'').trim();
+}
+
+async function api(path) {
+  const r = await fetch(path);
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
+/* ── Skeleton ────────────────────────────────────────────── */
+function skeletons(grid, n = 16) {
+  grid.innerHTML = Array(n).fill(
+    `<div class="sk-card"><div class="sk-poster sk"></div>
+     <div class="sk-line sk"></div><div class="sk-line s sk"></div></div>`
+  ).join('');
+}
+
+/* ── Movie Card ──────────────────────────────────────────── */
+function makeCard(movie, isNew = false) {
+  const card = document.createElement('div');
+  card.className = 'mcard';
+  const yr = extractYear(movie.name);
+  const title = cleanTitle(movie.name);
+
+  card.innerHTML = `
+    <div class="mcard-poster">
+      <div class="mcard-ph"><span><i class="fas fa-film"></i></span><small>${title}</small></div>
+      ${isNew ? '<span class="mcard-new">NEW</span>' : ''}
+      <div class="mcard-overlay"><div class="mcard-play"><i class="fas fa-play"></i></div></div>
+    </div>
+    <div class="mcard-info">
+      <div class="mcard-title">${movie.name}</div>
+      ${yr ? `<div class="mcard-year"><i class="fas fa-calendar"></i> ${yr}</div>` : ''}
+    </div>`;
+
+  card.onclick = () => openModal(movie);
+
+  // Lazy IMDB poster
+  if (title.length > 2) {
+    queuePoster(card, title);
+  }
+  return card;
+}
+
+/* ── Poster queue (rate-limit IMDB calls) ────────────────── */
+const posterQueue = [];
+let posterRunning = false;
+function queuePoster(card, title) {
+  posterQueue.push({ card, title });
+  if (!posterRunning) runPosterQueue();
+}
+async function runPosterQueue() {
+  posterRunning = true;
+  while (posterQueue.length) {
+    // Load up to 4 posters concurrently for faster loading in A-Z collections
+    const batch = [];
+    for (let i = 0; i < 4 && posterQueue.length > 0; i++) {
+      batch.push(posterQueue.shift());
+    }
+    await Promise.all(batch.map(({ card, title }) => loadPoster(card, title)));
+    await new Promise(r => setTimeout(r, 60)); // Reduced delay between batches
+  }
+  posterRunning = false;
+}
+async function loadPoster(card, title) {
+  try {
+    const d = await api(`/api/imdb?title=${encodeURIComponent(title)}`);
+    if (!d.poster) return;
+    const poster = card.querySelector('.mcard-poster');
+    const ph = poster.querySelector('.mcard-ph');
+    const img = document.createElement('img');
+    img.src = d.poster;
+    img.alt = title;
+    img.loading = 'lazy';
+    img.onerror = () => img.remove();
+    poster.insertBefore(img, poster.firstChild);
+    if (ph) ph.style.display = 'none';
+    if (d.rating) {
+      const rb = document.createElement('div');
+      rb.className = 'mcard-rating';
+      rb.innerHTML = `<i class="fas fa-star"></i> ${d.rating}`;
+      poster.appendChild(rb);
+    }
+    const hb = document.createElement('div');
+    hb.className = 'mcard-badge';
+    hb.textContent = 'HD';
+    poster.appendChild(hb);
+  } catch(e) {}
+}
+
+/* ── Grid render with pagination ─────────────────────────── */
+function renderPage(gridId, movies, page, lmId) {
+  const grid = $(gridId);
+  const slice = movies.slice(page * PAGE, (page + 1) * PAGE);
+  if (page === 0) grid.innerHTML = '';
+  slice.forEach((m, i) => grid.appendChild(makeCard(m, i < 5 && page === 0)));
+  const lm = $(lmId);
+  if (lm) lm.style.display = (page + 1) * PAGE < movies.length ? 'block' : 'none';
+}
+
+function filterGrid(input, gridId) {
+  const q = input.value.toLowerCase().trim();
+  document.querySelectorAll(`#${gridId} .mcard`).forEach(c => {
+    const t = c.querySelector('.mcard-title')?.textContent.toLowerCase() || '';
+    c.style.display = (!q || t.includes(q)) ? '' : 'none';
+  });
+}
+
+/* ── Sidebar ─────────────────────────────────────────────── */
+function toggleSidebar() {
+  $('sidebar').classList.toggle('open');
+  $('sb-overlay').classList.toggle('show');
+}
+function closeSidebar() {
+  $('sidebar').classList.remove('open');
+  $('sb-overlay').classList.remove('show');
+}
+
+/* ── Notifications ───────────────────────────────────────── */
+function toggleNotif(show) {
+  const p = $('notif-panel');
+  if (show === false) { p.classList.remove('show'); return; }
+  p.classList.toggle('show');
+  if (p.classList.contains('show')) {
+    S.notifCount = 0;
+    $('notif-dot').textContent = '0';
+  }
+}
+document.addEventListener('click', e => {
+  if (!$('notif-panel').contains(e.target) && !$('nbtn-notif').contains(e.target))
+    toggleNotif(false);
+});
+
+async function loadUpdates() {
+  try {
+    const list = await api('/api/updates');
+    const nl = $('np-list');
+    nl.innerHTML = '';
+    list.slice(0, 30).forEach((u, i) => {
+      const el = document.createElement('div');
+      el.className = 'np-item' + (i < 8 ? ' unread' : '');
+      el.innerHTML = `<div>${u.text}</div><div class="np-time"><i class="fas fa-clock"></i> Recently added</div>`;
+      el.onclick = () => el.classList.remove('unread');
+      nl.appendChild(el);
+    });
+    const cnt = list.filter((_, i) => i < 8).length;
+    S.notifCount = cnt;
+    $('notif-dot').textContent = cnt;
+
+    const ticker = list.slice(0, 12).map(u => u.text.replace(/<[^>]+>/g, '')).join('  •  ');
+    $('tk-inner').textContent = ticker || 'Stay tuned for the latest Tamil movie updates!';
+  } catch(e) { console.error('Updates:', e); }
+}
+
+/* ── Categories ──────────────────────────────────────────── */
+async function loadCategories() {
+  try {
+    S.cats = await api('/api/categories');
+    $('stat-cats').textContent = S.cats.length + '+';
+
+    const yearPat = /\d{4}/;
+    const yrEl = $('sb-years'), moreEl = $('sb-more'), tabsEl = $('year-tabs-wrap');
+    yrEl.innerHTML = ''; moreEl.innerHTML = ''; tabsEl.innerHTML = '';
+
+    S.cats.forEach(cat => {
+      const isYear = yearPat.test(cat.name);
+      const btn = document.createElement('button');
+      btn.className = 'sbbtn';
+      btn.innerHTML = `<span class="ic">${isYear ? '<i class="fas fa-calendar"></i>' : '<i class="fas fa-folder"></i>'}</span>${cat.name}`;
+      btn.onclick = () => { openCat(cat); closeSidebar(); };
+      (isYear ? yrEl : moreEl).appendChild(btn);
+
+      if (isYear) {
+        const yr = cat.name.match(/\d{4}/)?.[0];
+        if (yr) {
+          const tab = document.createElement('button');
+          tab.className = 'ytab';
+          tab.textContent = yr;
+          tab.dataset.catpath = cat.path;
+          tab.onclick = () => openCat(cat);
+          tabsEl.appendChild(tab);
+        }
+      }
+    });
+  } catch(e) { console.error('Categories:', e); }
+}
+
+/* ── Home / Latest 2025 ──────────────────────────────────── */
+async function loadHome() {
+  skeletons($('grid-latest'), 20);
+  try {
+    const data = await api('/api/movies?category=/tamil-2025-movies/');
+    S.homeMovies = data.movies || [];
+    $('stat-movies').textContent = S.homeMovies.length + '+';
+    $('cnt-latest').textContent = `(${S.homeMovies.length} movies)`;
+    S.homeMovies.forEach(m => indexMovie(m, 'Tamil 2025 Movies'));
+    S.homePage = 0;
+    renderPage('grid-latest', S.homeMovies, 0, 'lm-latest');
+  } catch(e) {
+    $('grid-latest').innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-face-frown"></i></div><div class="empty-msg">Could not load movies. Check your connection.</div></div>';
+    toast('Failed to load latest movies', 'error');
+  }
+}
+
+function loadMoreHome() {
+  S.homePage++;
+  renderPage('grid-latest', S.homeMovies, S.homePage, 'lm-latest');
+}
+
+/* ── Category View ───────────────────────────────────────── */
+async function openCat(cat) {
+  S.catInfo = cat;
+  $('view-home').style.display = 'none';
+  $('view-cat').style.display = 'block';
+
+  // Breadcrumb
+  const bc = $('bc');
+  bc.innerHTML = `
+    <span class="bc-item" onclick="showHome()"><i class="fas fa-home"></i> Home</span>
+    <span class="bc-sep">›</span>
+    <span class="bc-item last">${cat.name}</span>`;
+
+  // Title
+  $('cat-title').innerHTML = `<i class="fas fa-folder"></i> ${cat.name} <span class="sec-count" id="cnt-cat"></span>`;
+
+  // Active sidebar button
+  qsa('.sbbtn').forEach(b => b.classList.remove('active'));
+  qsa('.sbbtn').forEach(b => { if (b.textContent.trim().includes(cat.name.slice(0,10))) b.classList.add('active'); });
+  qsa('.ytab').forEach(b => { b.classList.toggle('active', b.dataset.catpath === cat.path); });
+
+  skeletons($('grid-cat'), 20);
+  $('lm-cat').style.display = 'none';
+  $('letter-section').style.display = 'none';
+  S.catMovies = []; S.catPage = 0;
+  S.selectedLetter = null;
+
+  try {
+    // Check if this is an A-Z category by trying to fetch folders
+    const folderData = await api(`/api/folders?path=${encodeURIComponent(cat.path)}`).catch(() => null);
+    
+    if (folderData && folderData.type === 'atoz' && folderData.folders && folderData.folders.length > 0) {
+      // A-Z category detected
+      renderLetterSelector(folderData.folders, cat);
+    } else {
+      // Regular category - load movies normally
+      toast(`Loading all movies from ${cat.name}…`, 'info');
+      const data = await api(`/api/movies?category=${encodeURIComponent(cat.path)}`);
+      S.catMovies = data.movies || [];
+      $('cnt-cat') && ($('cnt-cat').textContent = `(${S.catMovies.length} movies)`);
+      S.catMovies.forEach(m => indexMovie(m, cat.name));
+      renderPage('grid-cat', S.catMovies, 0, 'lm-cat');
+      toast(`Loaded ${S.catMovies.length} movies!`, 'success');
+    }
+  } catch(e) {
+    $('grid-cat').innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-face-frown"></i></div><div class="empty-msg">Failed to load. Try again.</div></div>';
+    toast('Failed to load category', 'error');
+  }
+}
+
+function renderLetterSelector(letters, cat) {
+  const letterSection = $('letter-section');
+  letterSection.style.display = 'block';
+  const grid = $('letter-grid');
+  grid.innerHTML = '';
+  
+  letters.forEach(letter => {
+    const btn = document.createElement('button');
+    btn.className = 'letter-btn';
+    btn.textContent = letter.name;
+    btn.dataset.path = letter.path;
+    btn.onclick = () => loadMoviesByLetter(letter, cat, btn);
+    grid.appendChild(btn);
+  });
+}
+
+async function loadMoviesByLetter(letter, cat, btn) {
+  // Update active button
+  qsa('.letter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  S.selectedLetter = letter.name;
+  S.catPage = 0;
+  
+  skeletons($('grid-cat'), 20);
+  $('lm-cat').style.display = 'none';
+  
+  try {
+    toast(`Loading movies starting with ${letter.name}…`, 'info');
+    const data = await api(`/api/movies?category=${encodeURIComponent(letter.path)}`);
+    S.catMovies = data.movies || [];
+    $('cnt-cat') && ($('cnt-cat').textContent = `(${S.catMovies.length} movies)`);
+    S.catMovies.forEach(m => indexMovie(m, `${cat.name} - ${letter.name}`));
+    renderPage('grid-cat', S.catMovies, 0, 'lm-cat');
+    if (S.catMovies.length > 0) {
+      toast(`Loaded ${S.catMovies.length} movies!`, 'success');
+    } else {
+      toast(`No movies found for letter ${letter.name}`, 'warn');
+    }
+  } catch(e) {
+    $('grid-cat').innerHTML = '<div class="empty"><div class="empty-icon"><i class="fas fa-face-frown"></i></div><div class="empty-msg">Failed to load movies. Try again.</div></div>';
+    toast('Failed to load movies', 'error');
+  }
+}
+
+function loadMoreCat() {
+  S.catPage++;
+  renderPage('grid-cat', S.catMovies, S.catPage, 'lm-cat');
+}
+
+function showHome() {
+  $('view-cat').style.display = 'none';
+  $('view-home').style.display = 'block';
+  qsa('.sbbtn').forEach(b => b.classList.remove('active'));
+  qsa('.ytab').forEach(b => b.classList.remove('active'));
+  S.catInfo = null;
+}
+
+/* ── Global Search Index ─────────────────────────────────── */
+function indexMovie(m, cat) {
+  if (!S.globalIdx.find(x => x.path === m.path)) S.globalIdx.push({ ...m, category: cat });
+}
+
+/* ── Global Search ───────────────────────────────────────── */
+let gst;
+function onGSearch(val) {
+  clearTimeout(gst);
+  $('gs-clear').classList.toggle('show', val.length > 0);
+  if (val.trim().length < 2) { $('gdrop').classList.remove('show'); return; }
+  gst = setTimeout(() => showGDrop(val.trim().toLowerCase()), 260);
+}
+function clearGSearch() {
+  $('gsearch').value = '';
+  $('gdrop').classList.remove('show');
+  $('gs-clear').classList.remove('show');
+}
+function showGDrop(q) {
+  const drop = $('gdrop');
+  const hits = S.globalIdx.filter(m => m.name.toLowerCase().includes(q)).slice(0, 22);
+  if (!hits.length) {
+    drop.innerHTML = `<div class="gd-empty">No results for "<b>${q}</b>". Try loading more categories from the sidebar.</div>`;
+    drop.classList.add('show'); return;
+  }
+  drop.innerHTML = hits.map(m => `
+    <div class="gd-item" onclick="openModal(${JSON.stringify(m).replace(/"/g,'&quot;')});$('gdrop').classList.remove('show');clearGSearch()">
+      <div class="gd-thumb" style="background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:1.2rem"><i class="fas fa-film"></i></div>
+      <div>
+        <div class="gd-name">${m.name}</div>
+        <div class="gd-cat"><i class="fas fa-folder"></i> ${m.category}</div>
+      </div>
+    </div>`).join('');
+  drop.classList.add('show');
+}
+document.addEventListener('click', e => {
+  if (!$('gsearch-wrap').contains(e.target)) $('gdrop').classList.remove('show');
+});
+
+/* ════════════════════════════════════════════════════════════
+   MOVIE DETAIL MODAL
+   ════════════════════════════════════════════════════════════ */
+async function openModal(movie) {
+  const bg = $('modal-bg');
+  $('modal-title').textContent = movie.name;
+  $('modal-body').innerHTML = `<div class="modal-spin"><div class="spin"></div><div style="color:var(--muted);font-size:.88rem">Fetching movie details…</div></div>`;
+  bg.classList.add('show');
+  document.body.style.overflow = 'hidden';
+
+  try {
+    const title = cleanTitle(movie.name);
+    const [imdb, items] = await Promise.all([
+      api(`/api/imdb?title=${encodeURIComponent(title)}`).catch(() => ({})),
+      api(`/api/items?path=${encodeURIComponent(movie.path)}`).catch(() => ({ subItems:[], files:[] })),
+    ]);
+    renderDetail(movie, imdb, items);
+  } catch(e) {
+    $('modal-body').innerHTML = `<div class="empty"><div class="empty-icon"><i class="fas fa-face-frown"></i></div><div class="empty-msg">Failed to load details.<br><small>${e.message}</small></div></div>`;
+  }
+}
+
+function renderDetail(movie, imdb, items) {
+  const title = cleanTitle(movie.name);
+  const yr    = extractYear(movie.name);
+
+  $('modal-body').innerHTML = `
+
+    <!-- ══ CUSTOM VIDEO PLAYER ══ -->
+    <div id="player-wrap">
+      <video id="vid" controls playsinline preload="metadata">
+        Your browser does not support HTML5 video.
+      </video>
+      <div class="player-loading-overlay" id="pl-loading"><div class="spin"></div><div style="color:#aaa;font-size:.82rem">Loading stream…</div></div>
+      <div class="player-error" id="pl-error">
+        <span style="font-size:2rem"><i class="fas fa-triangle-exclamation" style="color:var(--accent)"></i></span>
+        <span id="pl-err-msg">Could not load stream</span>
+        <button class="btn btn-outline" style="margin-top:6px" onclick="hidePlayer()">Close Player</button>
+      </div>
+      <div class="player-gradient">
+        <div class="player-title-bar" id="pl-title">Loading…</div>
+        <input type="range" id="player-progress" min="0" max="100" step="0.1" value="0">
+        <div class="player-ctrls">
+          <button class="pc" id="pp-btn" onclick="togglePlay()" title="Play/Pause"><i class="fas fa-play"></i></button>
+          <button class="pc" onclick="skip(-10)" title="Back 10s"><i class="fas fa-backward-step"></i></button>
+          <button class="pc" onclick="skip(10)" title="Forward 10s"><i class="fas fa-forward-step"></i></button>
+          <button class="pc" id="mute-btn" onclick="toggleMute()" title="Mute"><i class="fas fa-volume-high"></i></button>
+          <input type="range" id="player-vol" min="0" max="1" step="0.05" value="1"
+                 oninput="setVol(this.value)" title="Volume">
+          <span class="p-time" id="p-time">0:00 / 0:00</span>
+          <div class="p-right">
+            <select id="p-speed" onchange="setSpeed(this.value)"
+              style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:3px 6px;font-size:.75rem;cursor:pointer">
+              <option value="0.5">0.5×</option>
+              <option value="0.75">0.75×</option>
+              <option value="1" selected>1×</option>
+              <option value="1.25">1.25×</option>
+              <option value="1.5">1.5×</option>
+              <option value="2">2×</option>
+            </select>
+            <button class="pc" onclick="toggleFullscreen()" title="Fullscreen"><i class="fas fa-expand"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MOVIE INFO ══ -->
+    <div class="dl">
+      <div>
+        <div class="dl-poster">
+          ${imdb.poster
+            ? `<img src="${imdb.poster}" alt="${title}">`
+            : `<div class="dl-ph"><span><i class="fas fa-film"></i></span><small style="font-size:.72rem;text-align:center;padding:6px">${title}</small></div>`}
+        </div>
+      </div>
+      <div>
+        <div class="dl-title">${movie.name}</div>
+        <div class="dl-meta">
+          ${yr ? `<span class="dl-tag"><i class="fas fa-calendar"></i> ${yr}</span>` : ''}
+          ${imdb.rating ? `<span class="dl-tag gold"><i class="fas fa-star"></i> ${imdb.rating} IMDB</span>` : ''}
+          ${imdb.genre ? `<span class="dl-tag">${imdb.genre.split(',')[0].trim()}</span>` : ''}
+          ${imdb.runtime ? `<span class="dl-tag"><i class="fas fa-hourglass-end"></i> ${imdb.runtime}</span>` : ''}
+          <span class="dl-tag green"><i class="fas fa-film"></i> Tamil</span>
+        </div>
+        ${imdb.plot ? `<div class="dl-plot">${imdb.plot}</div>` : ''}
+        ${imdb.director ? `<div class="dl-row"><i class="fas fa-film"></i> <b>Director:</b> ${imdb.director}</div>` : ''}
+        ${imdb.actors ? `<div class="dl-row"><i class="fas fa-theater-masks"></i> <b>Cast:</b> ${imdb.actors}</div>` : ''}
+        ${imdb.awards ? `<div class="dl-row"><i class="fas fa-trophy"></i> <b>Awards:</b> ${imdb.awards}</div>` : ''}
+
+        ${(items.subItems && items.subItems.length) ? `
+          <div style="margin-top:14px">
+            <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Quality / Version</div>
+            <div class="qtabs" id="qtabs">
+              ${items.subItems.map((q,i) =>
+                `<button class="qtab${i===0?' on':''}" onclick="loadQ(this,'${q.path}')">${q.name}</button>`
+              ).join('')}
+            </div>
+          </div>
+          <div id="q-area"><div style="padding:14px;color:var(--muted);font-size:.83rem">Select a quality above…</div></div>
+        ` : '<div id="q-area"></div>'}
+      </div>
+    </div>
+
+    ${(items.files && items.files.length) ? renderFiles(items.files) : ''}
+  `;
+
+  initPlayer();
+
+  // Auto-load first quality
+  if (items.subItems && items.subItems.length > 0) {
+    loadQ(qs('#qtabs .qtab'), items.subItems[0].path);
+  }
+}
+
+async function loadQ(btn, path) {
+  qsa('#qtabs .qtab').forEach(b => b.classList.remove('on'));
+  btn && btn.classList.add('on');
+  const area = $('q-area');
+  area.innerHTML = `<div style="padding:16px;display:flex;align-items:center;gap:10px;color:var(--muted)"><div class="spin spin-sm"></div>Loading…</div>`;
+
+  try {
+    const data = await api(`/api/items?path=${encodeURIComponent(path)}`);
+    if (data.subItems && data.subItems.length) {
+      area.innerHTML = `
+        <div style="font-size:.78rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:10px 0 8px">Resolution</div>
+        <div class="qtabs" id="res-tabs">
+          ${data.subItems.map((s,i) =>
+            `<button class="qtab${i===0?' on':''}" onclick="loadRes(this,'${s.path}')">${s.name}</button>`
+          ).join('')}
+        </div>
+        <div id="res-area"><div style="padding:12px;color:var(--muted);font-size:.82rem">Select resolution…</div></div>`;
+      if (data.subItems.length > 0) loadRes(area.querySelector('.qtab'), data.subItems[0].path);
+    } else if (data.files && data.files.length) {
+      area.innerHTML = renderFiles(data.files);
+    } else {
+      area.innerHTML = `<div style="padding:14px;color:var(--muted);font-size:.83rem">No files found for this quality.</div>`;
+    }
+  } catch(e) {
+    area.innerHTML = `<div style="padding:14px;color:var(--accent);font-size:.83rem">Error loading. Try again.</div>`;
+  }
+}
+
+async function loadRes(btn, path) {
+  qsa('#res-tabs .qtab').forEach(b => b.classList.remove('on'));
+  btn && btn.classList.add('on');
+  const area = $('res-area');
+  area.innerHTML = `<div style="padding:14px;display:flex;align-items:center;gap:10px;color:var(--muted)"><div class="spin spin-sm"></div>Loading files…</div>`;
+  try {
+    const data = await api(`/api/items?path=${encodeURIComponent(path)}`);
+    area.innerHTML = (data.files && data.files.length)
+      ? renderFiles(data.files)
+      : `<div style="padding:14px;color:var(--muted);font-size:.83rem">No download files found.</div>`;
+  } catch(e) {
+    area.innerHTML = `<div style="padding:14px;color:var(--accent);font-size:.83rem">Error loading files.</div>`;
+  }
+}
+
+function renderFiles(files) {
+  if (!files || !files.length) return '';
+  return `<div style="margin-top:10px">${files.map(f => `
+    <div class="fcard">
+      <div class="fcard-thumb" style="background:var(--bg2);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        ${f.thumb
+          ? `<img src="${f.thumb}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\\"fas fa-film\\" style=\\"font-size:1.2rem;color:var(--accent);\\"></i>';">`
+          : `<i class="fas fa-film" style="font-size:1.2rem;color:var(--accent);"></i>`}
+      </div>
+      <div class="fcard-info">
+        <div class="fcard-name" title="${f.name||''}">${f.name||'Movie File'}</div>
+        <div class="fcard-meta">${f.size||''} ${f.format ? '· '+f.format : ''}</div>
+      </div>
+      <div class="fcard-btns">
+        <button class="btn btn-watch" onclick="watchMovie('${f.dlPath}','${(f.name||'').replace(/'/g,"\\'")}')"><i class="fas fa-play"></i> Watch</button>
+        <button class="btn btn-dl" onclick="dlMovie('${f.dlPath}','${(f.name||'').replace(/'/g,"\\'")}')"><i class="fas fa-download"></i> Download</button>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   VIDEO PLAYER
+   ════════════════════════════════════════════════════════════ */
+let vid;
+
+function initPlayer() {
+  vid = $('vid');
+  if (!vid) return;
+
+  const pb   = $('player-progress');
+  const time = $('p-time');
+  const ppb  = $('pp-btn');
+  const load = $('pl-loading');
+
+  vid.addEventListener('timeupdate', () => {
+    if (!vid.duration) return;
+    pb.value = (vid.currentTime / vid.duration) * 100;
+    time.textContent = `${sec2hms(vid.currentTime)} / ${sec2hms(vid.duration)}`;
+  });
+  vid.addEventListener('play',    () => ppb.innerHTML = '<i class="fas fa-pause"></i>');
+  vid.addEventListener('pause',   () => ppb.innerHTML = '<i class="fas fa-play"></i>');
+  vid.addEventListener('ended',   () => ppb.innerHTML = '<i class="fas fa-play"></i>');
+  vid.addEventListener('waiting', () => load.classList.add('show'));
+  vid.addEventListener('playing', () => load.classList.remove('show'));
+  vid.addEventListener('canplay', () => load.classList.remove('show'));
+  vid.addEventListener('error',   () => {
+    load.classList.remove('show');
+    $('pl-err-msg').textContent = 'Could not load the video. Try another quality.';
+    $('pl-error').classList.add('show');
+  });
+
+  pb.addEventListener('input', () => {
+    if (vid.duration) vid.currentTime = (pb.value / 100) * vid.duration;
+  });
+}
+
+function togglePlay()   { vid && (vid.paused ? vid.play() : vid.pause()); }
+function skip(s)        { if (vid) vid.currentTime = Math.max(0, vid.currentTime + s); }
+function setVol(v)      { if (vid) vid.volume = v; }
+function setSpeed(v)    { if (vid) vid.playbackRate = parseFloat(v); }
+function toggleMute()   {
+  if (!vid) return;
+  vid.muted = !vid.muted;
+  $('mute-btn').innerHTML = vid.muted ? '<i class="fas fa-volume-xmark"></i>' : '<i class="fas fa-volume-high"></i>';
+}
+function toggleFullscreen() {
+  const el = $('player-wrap');
+  document.fullscreenElement ? document.exitFullscreen() : el.requestFullscreen?.();
+}
+function hidePlayer() {
+  const pw = $('player-wrap');
+  if (pw) { pw.classList.remove('show'); if(vid){vid.pause();vid.src='';} }
+}
+
+async function watchMovie(dlPath, name) {
+  const pw = $('player-wrap');
+  if (!pw) return;
+  pw.classList.add('show');
+  pw.scrollIntoView({ behavior:'smooth', block:'start' });
+
+  $('pl-loading').classList.add('show');
+  $('pl-error').classList.remove('show');
+  $('pl-title').textContent = name || 'Loading…';
+
+  if (!vid) initPlayer();
+
+  try {
+    toast('Fetching stream URL…', 'info');
+    const links = await api(`/api/links?dlpath=${encodeURIComponent(dlPath)}`);
+
+    let streamUrl = '';
+
+    // 1. Try the watch page to extract direct MP4
+    if (links.watchUrls && links.watchUrls.length) {
+      const sr = await api(`/api/stream?url=${encodeURIComponent(links.watchUrls[0])}`).catch(()=>({}));
+      streamUrl = sr.streamUrl || '';
+    }
+
+    // 2. Fall back to direct download URL (it's usually an MP4)
+    if (!streamUrl && links.downloadUrls && links.downloadUrls.length) {
+      streamUrl = links.downloadUrls[0];
+    }
+
+    if (!streamUrl) {
+      $('pl-loading').classList.remove('show');
+      $('pl-err-msg').textContent = 'No stream URL found. Try Download instead.';
+      $('pl-error').classList.add('show');
+      toast('Stream not found. Use Download button.', 'warn');
+      return;
+    }
+
+    vid.src = streamUrl;
+    vid.load();
+    vid.play().catch(() => {});
+    $('pl-title').textContent = name || links.fileName || 'Now Playing';
+    toast('<i class="fas fa-film"></i> Stream loaded! Enjoy!', 'success');
+  } catch(e) {
+    $('pl-loading').classList.remove('show');
+    $('pl-err-msg').textContent = e.message || 'Stream error';
+    $('pl-error').classList.add('show');
+    toast('Stream error: ' + e.message, 'error');
+  }
+}
+
+async function dlMovie(dlPath, name) {
+  toast('Fetching download link…', 'info');
+  try {
+    const links = await api(`/api/links?dlpath=${encodeURIComponent(dlPath)}`);
+    if (!links.downloadUrls || !links.downloadUrls.length) {
+      toast('No download link found.', 'error'); return;
+    }
+    const url = links.downloadUrls[0];
+    const a   = document.createElement('a');
+    a.href     = url;
+    a.download = links.fileName || name || 'movie.mp4';
+    a.rel      = 'noopener noreferrer';
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast('<i class="fas fa-download"></i> Download started!', 'success');
+  } catch(e) {
+    toast('Download error: ' + e.message, 'error');
+  }
+}
+
+/* ── Modal close ─────────────────────────────────────────── */
+function closeModal() {
+  $('modal-bg').classList.remove('show');
+  document.body.style.overflow = '';
+  // Stop video
+  if (vid) { vid.pause(); vid.src = ''; }
+}
+function onModalBgClick(e) { if (e.target === $('modal-bg')) closeModal(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+   ════════════════════════════════════════════════════════════ */
+async function init() {
+  try {
+    await Promise.all([
+      loadCategories(),
+      loadHome(),
+      loadUpdates(),
+    ]);
+  } catch(e) { console.error('Init error:', e); }
+
+  // Hide loader
+  setTimeout(() => {
+    $('loader').classList.add('gone');
+    setTimeout(() => $('loader').remove(), 600);
+  }, 700);
+}
+
+init();
+</script>
+</body>
+</html>
